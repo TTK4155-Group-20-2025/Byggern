@@ -9,7 +9,7 @@
 int main() {
     uart_init(MYUBRR);
     sei();
-    fdevopen(uart_send, uart_read);
+    uart_printf_scanf_init();
     printf("Hei pa");
 
     DDRA = (1 << DDA0);
