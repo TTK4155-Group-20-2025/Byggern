@@ -59,6 +59,7 @@
   "files.associations": {
     ".als.json": "jsonc",
     "uart.h": "c",
-    "stdio.h": "c"
+    "stdio.h": "c",
+    "compare": "c"
   }
 }

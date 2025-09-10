@@ -26,7 +26,7 @@ int uart_send(uint8_t letter) {
         } tx_head += 1;
         tx_buffer[tx_tail] = letter;
         sei();
-    }
+    } 
     return 0;
 }
 
@@ -53,8 +53,7 @@ int uart_printf(uint8_t letter, FILE *stream) {
 }
 
 uint8_t uart_scanf(FILE *stream) {
-    uart_read();
-    return 0;
+    return uart_read();
 }
 
 ISR(USART0_UDRE_vect) {
