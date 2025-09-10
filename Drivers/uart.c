@@ -19,12 +19,13 @@ void uart_init(unsigned int ubrr) {
 }
 
 int uart_send(uint8_t letter) {
-    if (tx_head < BUFFER_SIZE) {
-        tx_head += 1;
-        for (int i = tx_tail; i <= tx_head; i++) {
-            tx_buffer[i+1] = tx_buffer[i];
-        }
+    if (tx_head < BUFFER_SIZE + 1) {
+        cli();
+        for (int i = tx_head; i > tx_tail; i--) {
+            tx_buffer[i] = tx_buffer[i-1];
+        } tx_head += 1;
         tx_buffer[tx_tail] = letter;
+        sei();
     }
     return 0;
 }
@@ -53,11 +54,14 @@ int uart_printf(uint8_t letter, FILE *stream) {
 
 uint8_t uart_scanf(FILE *stream) {
     uart_read();
+    return 0;
 }
 
 ISR(USART0_UDRE_vect) {
-    UDR0 = tx_buffer[tx_head];
-    tx_head -= 1;
+    if (tx_head > tx_tail) {
+        UDR0 = tx_buffer[tx_head - 1];
+        tx_head -= 1;
+    }
 }
 
 ISR(USART0_RXC_vect) {

@@ -10,28 +10,29 @@ int main() {
     uart_init(MYUBRR);
     sei();
     uart_printf_scanf_init();
-    printf("Hei pa");
+    printf("Polsefingre");
 
     DDRA = (1 << DDA0);
     uint8_t testValue = 'c';
     while (1) {
 
+        
+        if (uart_read() == 'a') {
+            PORTA = (1 << PA0);
+        }
+        uart_send(testValue);
+        if (uart_read() == 'a') {
+            PORTA = (0 << PA0);
+        }
+        uart_send(testValue);
 
-        // //uart_read();
-        // PORTA = (1 << PA0);
-        // //uart_send(testValue);
-        // if (uart_read()) {
-        //     PORTA = (0 << PA0);
-        // }
-        // uart_send(testValue);
+        for (int i = 0; i < 25000; i++) {
+        }
+        
+        //PORTA = (0 << PA0);
 
-        // for (int i = 0; i < 25000; i++) {
-        // }
-
-        // //PORTA = (0 << PA0);
-
-        // //for (int i = 0; i < 25000; i++) {
-        // //}
+        //for (int i = 0; i < 25000; i++) {
+        //}
     }
     return 0;
 }
