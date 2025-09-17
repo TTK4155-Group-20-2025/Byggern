@@ -19,14 +19,22 @@ void uart_init(unsigned int ubrr) {
 }
 
 int uart_send(uint8_t letter) {
-    if (tx_head < BUFFER_SIZE + 1) {
-        cli();
-        for (int i = tx_head; i > tx_tail; i--) {
-            tx_buffer[i] = tx_buffer[i-1];
-        } tx_head += 1;
-        tx_buffer[tx_tail] = letter;
-        sei();
-    } 
+    // Standard non-ring buffer
+    // if (tx_head < BUFFER_SIZE + 1) {
+    //     cli();
+    //     for (int i = tx_head; i > tx_tail; i--) {
+    //         tx_buffer[i] = tx_buffer[i-1];
+    //     } tx_head += 1;
+    //     tx_buffer[tx_tail] = letter;
+    //     sei();
+    // } 
+
+    // Ring buffer
+    uint8_t next_head = (tx_head + 1) % BUFFER_SIZE;
+    while(next_head == tx_tail);
+    tx_buffer[tx_head] = letter;
+    tx_head = next_head;
+
     return 0;
 }
 
@@ -57,9 +65,15 @@ uint8_t uart_scanf(FILE *stream) {
 }
 
 ISR(USART0_UDRE_vect) {
-    if (tx_head > tx_tail) {
-        UDR0 = tx_buffer[tx_head - 1];
-        tx_head -= 1;
+    // Implementation w/o ring buffer
+    // if (tx_head > tx_tail) {
+    //     UDR0 = tx_buffer[tx_head - 1];
+    //     tx_head -= 1;
+    // }
+
+    if (tx_head != tx_tail) {
+        UDR0 = tx_buffer[tx_tail];
+        tx_tail = (tx_tail + 1) % BUFFER_SIZE;
     }
 }
 
