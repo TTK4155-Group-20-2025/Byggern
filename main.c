@@ -14,10 +14,11 @@ int main() {
     uart_printf_scanf_init();
     sram_init();
     adc_init();
-    pos_calibrate();
 
     position_t position_joystick;
-    printf("Hei");
+    pos_calibrate(&position_joystick);
+
+    // printf("Hei");
 
     sei();
     
@@ -38,11 +39,12 @@ int main() {
  
     //uint8_t testValue = 'c';
     while (1) {
-        //pos_read(&position_joystick);
+        pos_read(&position_joystick);
         //printf("Pos x: %u \n", position_joystick.X);
-        printf("Channel 0: %u \n", testRead(0));
+        printf("Channel 0: %u \n", adc_read(0));
 
         //*ext_ram = 0;
+        //printf("Hei");
         
     //     if (uart_read() == 'a') {
     //         PORTA = (1 << PA0);
