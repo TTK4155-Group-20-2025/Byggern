@@ -1,6 +1,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <stdio.h>
+#include <stdint.h>
 
 void uart_init(unsigned int ubrr); // Intializes the UART
 int uart_send(uint8_t letter); // The UART sends a char (8-bit signal) via. the RS-232

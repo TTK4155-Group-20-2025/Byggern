@@ -1,5 +1,3 @@
-//#include <avr/io.h>
-//#include <avr/interrupt.h>
 #include "uart.h"
 
 #define BUFFER_SIZE 64
@@ -19,16 +17,6 @@ void uart_init(unsigned int ubrr) {
 }
 
 int uart_send(uint8_t letter) {
-    // Standard non-ring buffer
-    // if (tx_head < BUFFER_SIZE + 1) {
-    //     cli();
-    //     for (int i = tx_head; i > tx_tail; i--) {
-    //         tx_buffer[i] = tx_buffer[i-1];
-    //     } tx_head += 1;
-    //     tx_buffer[tx_tail] = letter;
-    //     sei();
-    // } 
-
     // Ring buffer
     uint8_t next_head = (tx_head + 1) % BUFFER_SIZE;
     while(next_head == tx_tail);
@@ -65,12 +53,6 @@ uint8_t uart_scanf(FILE *stream) {
 }
 
 ISR(USART0_UDRE_vect) {
-    // Implementation w/o ring buffer
-    // if (tx_head > tx_tail) {
-    //     UDR0 = tx_buffer[tx_head - 1];
-    //     tx_head -= 1;
-    // }
-
     if (tx_head != tx_tail) {
         UDR0 = tx_buffer[tx_tail];
         tx_tail = (tx_tail + 1) % BUFFER_SIZE;
