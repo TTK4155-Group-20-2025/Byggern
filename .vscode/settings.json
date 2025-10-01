@@ -62,6 +62,8 @@
     "stdio.h": "c",
     "compare": "c",
     "adc.h": "c",
-    "stdint.h": "c"
+    "stdint.h": "c",
+    "oled.h": "c",
+    "sram.h": "c"
   }
 }

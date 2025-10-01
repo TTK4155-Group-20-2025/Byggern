@@ -13,7 +13,8 @@
 // volatile uint8_t spi_ready = 0;
 
 void spi_master_init() {
-    DDRB |= (1 << PB4) | (1 << PB1); //ADD ANOTHER PORT FOR SS IN CAN EXERCISE
+    DDRB |= (1 << PB7) | (1 << PB5) | (1 << PB4) | (1 << PB1); //ADD ANOTHER PORT FOR SS IN CAN EXERCISE
+    DDRB &= ~(1 << PB6);
     PORTB |= (1 << PB4) | (1 << PB1);
 
     SPCR |= (1 << SPE) | (1 << MSTR);
@@ -23,35 +24,17 @@ void spi_master_init() {
     // spi_ready = 1;
 }
 
-// Enable OLED as slave
+// Enable OLED (PB1) as slave
 void enable_slave_OLED() {
-    if (PORTB & (1 << PB1)) {
-        PORTB ^= (1 << PB1);
-    } else {
-        printf("OLED slave is already enabled\n");
-    }
+    PORTB &= ~(1 << PB1);
 }
-void disable_slave_OLED() {
-    if (!PORTB & (1 << PB1)) {
-        PORTB ^= (1 << PB1);
-    } else {
-        printf("OLED slave is already disabled\n");
-    }
-}
-// Enable IO Board as slave
+// Enable IO Board (PB4) as slave
 void enable_slave_IO_BOARD() {
-    if (PORTB & (1 << PB4)) {
-        PORTB ^= (1 << PB4);
-    } else {
-        printf("IO BOARD slave is already enabled\n");
-    }
+    PORTB &= ~(1 << PB4);
 }
-void disable_slave_IO_BOARD() {
-    if (!PORTB & (1 << PB4)) {
-        PORTB ^= (1 << PB4);
-    } else {
-        printf("IO BOARD slave is already disabled\n");
-    }
+// Disable all slaves
+void disable_all_slaves() {
+    PORTB |= (1 << PB4) | (1 << PB1);
 }
 // MAYBE ADD ENABLE/DISABLE FOR CAN
 
@@ -75,7 +58,14 @@ uint8_t spi_master_receive() {
     //     spi_receive_tail = (spi_receive_tail + 1) % BUFFER_SIZE;
     //     return spi_receive_buffer[spi_receive_tail];
     // }
+    SPDR = 0;
     while(!(SPSR & (1 << SPIF)));
+    return SPDR;
+}
+
+uint8_t spi_master_transceive(uint8_t letter) {
+    SPDR = letter;
+    while(!(SPDR & (1 << SPIF)));
     return SPDR;
 }
 
@@ -88,3 +78,11 @@ uint8_t spi_master_receive() {
 //         spi_ready_buffer_empty = 1;
 //     }
 // }
+
+void spi_test() {
+    enable_slave_IO_BOARD();
+    spi_master_transmit(0x05);
+    spi_master_transmit(0x01);
+    spi_master_transmit(0x01);
+    disable_all_slaves();
+}
