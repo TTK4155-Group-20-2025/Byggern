@@ -3,6 +3,9 @@
 #include <stdint.h>
 #include <avr/interrupt.h>
 #include <math.h>
+
+#define F_CPU 4195200UL
+
 #include <util/delay.h>
 #include <inttypes.h>
 

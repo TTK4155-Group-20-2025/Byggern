@@ -1,5 +1,5 @@
 # List all source files to be compiled; separate with space
-SOURCE_FILES := main.c Drivers/uart.c Drivers/sram.c Drivers/adc.c Drivers/spi.c Drivers/oled.c
+SOURCE_FILES := main.c Drivers/uart.c Drivers/sram.c Drivers/adc.c Drivers/spi.c Drivers/oled.c Drivers/menu.c
 
 # Set this flag to "yes" (no quotes) to use JTAG; otherwise ISP (SPI) is used
 PROGRAM_WITH_JTAG := yes

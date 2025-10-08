@@ -2,9 +2,10 @@
 #include <stdio.h>
 #include "Drivers/uart.h"
 #include "Drivers/sram.h"
-#include "Drivers/adc.h"
+//#include "Drivers/adc.h"
 #include "Drivers/spi.h"
 #include "Drivers/oled.h"
+#include "Drivers/menu.h"
 
 #define FOSC 4915200
 #define BAUD 9600
@@ -19,17 +20,17 @@ int main() {
     oled_init();
 
     position_t JoyStick;
+    menu_t my_menu;
     pos_calibrate(&JoyStick); // DO NOT REMOVE
+    menu_init(&my_menu);
 
     sei();
     int16_t a = 0;
-
-    oled_home();
-    oled_print_box(3);
     
     while (1) {
-        a = adc_read_TC(0); // DO NOT REMOVE
-        //oled_test();
+        // a = adc_read_TC(0); // DO NOT REMOVE
+        oled_update(); // DO NOT REMOVE
+        update_menu(&my_menu, &JoyStick);
     }
 
     return 0;

@@ -23,9 +23,13 @@ void adc_init() {
     //_delay_us(40);
 
     // Enable timer/counter0 interrupt and start timer
-    TCCR0 |= (1 << WGM01) | (1 << CS02) | (0 << CS01) | (1 << CS00);
-    TIMSK |= (1 << OCIE0);
-    OCR0 = 48;
+    // TCCR0 |= (1 << WGM01) | (1 << CS02) | (0 << CS01) | (1 << CS00);
+    // TIMSK |= (1 << OCIE0);
+    // OCR0 = 48;
+    TCCR3A |= (1 << COM3A1);
+    TCCR3B |= (1 << WGM32) | (1 << CS32) | (1 << CS30);
+    ETIMSK |= (1 << OCIE3A);
+    OCR3A = 48;
 }
 
 // Reading ADC with timer/counter0
@@ -130,33 +134,33 @@ void pos_read(position_t* position_joystick) {
     }
 
     // FOR TESTING:
-    // position_joystick->X = x_percent;
-    // printf("X_precent: %" PRIi16 "\n", position_joystick->X);
-    // position_joystick->Y = y_percent;
-    // printf("Y_precent: %" PRIi16 "\n", position_joystick->Y);
+    position_joystick->X = x_percent;
+    //printf("X_precent: %" PRIi16 "\n", position_joystick->X);
+    position_joystick->Y = y_percent;
+    //printf("Y_precent: %" PRIi16 "\n", position_joystick->Y);
 }
 
 void direction_read(position_t* position_joystick) {
     // int8_t neutral_zone = 20;
 
-    if (position_joystick->Y > 20 && position_joystick->Y >= abs(position_joystick->X)) {
+    if (position_joystick->Y > 40 && position_joystick->Y >= abs(position_joystick->X)) {
         position_joystick->DIR = DIR_UP;
-        printf("Up\n");
-    } else if (position_joystick->Y < -20 && abs(position_joystick->Y) >= abs(position_joystick->X)) {
+        // printf("Up\n");
+    } else if (position_joystick->Y < -40 && abs(position_joystick->Y) >= abs(position_joystick->X)) {
         position_joystick->DIR = DIR_DOWN;
-        printf("Down\n");
-    } else if (position_joystick->X > 20 && abs(position_joystick->X) > abs(position_joystick->Y)) {
+        // printf("Down\n");
+    } else if (position_joystick->X > 40 && abs(position_joystick->X) > abs(position_joystick->Y)) {
         position_joystick->DIR = DIR_RIGHT;
-        printf("Right\n");
-    } else if (position_joystick->X < -20 && abs(position_joystick->X) < abs(position_joystick->Y)) {
+        // printf("Right\n");
+    } else if (position_joystick->X < -40 && abs(position_joystick->X) < abs(position_joystick->Y)) {
         position_joystick->DIR = DIR_LEFT;
-        printf("Left\n");
+        // printf("Left\n");
     } else {
         position_joystick->DIR = DIR_NEUTRAL;
-        printf("Neutral\n");
+        // printf("Neutral\n");
     }
 }
 
-ISR(TIMER0_COMP_vect) {
+ISR(TIMER3_COMPA_vect) {
     read_pos_flag = 1;
 }
