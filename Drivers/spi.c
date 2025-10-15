@@ -13,9 +13,9 @@
 // volatile uint8_t spi_ready = 0;
 
 void spi_master_init() {
-    DDRB |= (1 << PB7) | (1 << PB5) | (1 << PB4) | (1 << PB3) | (1 << PB1); //ADD ANOTHER PORT FOR SS IN CAN EXERCISE
+    DDRB |= (1 << PB7) | (1 << PB5) | (1 << PB4) | (1 << PB3) | (1 << PB2) | (1 << PB1);
     DDRB &= ~(1 << PB6);
-    PORTB |= (1 << PB3) | (1 << PB1);
+    PORTB |= (1 << PB3) | (1 << PB2) | (1 << PB1);
 
     SPCR |= (1 << SPE) | (1 << MSTR);
     SPSR |= (1 << SPI2X);
@@ -32,11 +32,14 @@ void enable_slave_OLED() {
 void enable_slave_IO_BOARD() {
     PORTB &= ~(1 << PB3);
 }
+// Enable CAN controller as slave
+void enable_slave_CAN() {
+    PORTB &= ~(1 << PB2);
+}
 // Disable all slaves
 void disable_all_slaves() {
-    PORTB |= (1 << PB3) | (1 << PB1);
+    PORTB |= (1 << PB3) | (1 << PB2) | (1 << PB1);
 }
-// MAYBE ADD ENABLE/DISABLE FOR CAN
 
 void spi_master_transmit(uint8_t letter) {
     // For spi interrupt

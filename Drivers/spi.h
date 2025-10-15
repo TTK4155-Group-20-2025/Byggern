@@ -7,6 +7,7 @@
 void spi_master_init();
 void enable_slave_OLED();
 void enable_slave_IO_BOARD();
+void enable_slave_CAN();
 void disable_all_slaves();
 void spi_master_transmit(uint8_t letter);
 uint8_t spi_master_receive();

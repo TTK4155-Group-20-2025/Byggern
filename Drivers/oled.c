@@ -5,7 +5,7 @@
 #define PAGES 8
 
 volatile uint8_t update_oled_flag = 0;
-volatile uint8_t* OLED_DISPLAY = (volatile uint8_t*)0x1500;
+volatile uint8_t* OLED_DISPLAY = (volatile uint8_t*)0x1600;
 
 void oled_init() {
     enable_slave_OLED();

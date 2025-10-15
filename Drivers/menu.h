@@ -7,6 +7,8 @@
 
 #include <util/delay.h>
 
+// SETTINGMENU???
+
 typedef enum {
     HOME,
     GAME,

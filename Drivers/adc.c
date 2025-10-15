@@ -22,10 +22,6 @@ void adc_init() {
     //adc_output[0] = 0;
     //_delay_us(40);
 
-    // Enable timer/counter0 interrupt and start timer
-    // TCCR0 |= (1 << WGM01) | (1 << CS02) | (0 << CS01) | (1 << CS00);
-    // TIMSK |= (1 << OCIE0);
-    // OCR0 = 48;
     TCCR3A |= (1 << COM3A1);
     TCCR3B |= (1 << WGM32) | (1 << CS32) | (1 << CS30);
     ETIMSK |= (1 << OCIE3A);

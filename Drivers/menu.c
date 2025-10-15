@@ -1,5 +1,7 @@
 #include "menu.h"
 
+// SETTINGMENU???
+
 void menu_init(menu_t* menu) {
     menu->state = HOME;
     oled_home();
