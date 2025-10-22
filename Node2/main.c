@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include "sam.h"
+#include "StarterCode/uart.h"
+
+#define F_CPU 84000000
+#define BAUDRATE 9600
 
 /*
  * Remember to update the Makefile with the (relative) path to the uart.c file.
@@ -11,11 +15,11 @@
  * If you get errors such as "arm-none-eabi-gcc: no such file", you may need to reinstall the arm gcc packages using
  * apt or your favorite package manager.
  */
-//#include "../path_to/uart.h"
 
 int main()
 {
     SystemInit();
+    uart_init(F_CPU, BAUDRATE);
 
     WDT->WDT_MR = WDT_MR_WDDIS; //Disable Watchdog Timer
 
@@ -23,9 +27,23 @@ int main()
     //uart_init(/*cpufreq*/, /*baud*/);
     //printf("Hello World\n\r");
 
+    PMC->PMC_PCER0 = PMC_PCER0_PID12;
+
+    PIOB->PIO_PER = PIO_PER_P13;
+    PIOB->PIO_OER = PIO_OER_P13;
+
+    PIOB->PIO_SODR = PIO_SODR_P13;
+
+    PIOB->PIO_CODR = PIO_SODR_P13;
+
+    uint8_t a = 'a';
+
+    uart_tx(a);
+
     while (1)
     {
         /* code */
+
     }
     
 }
