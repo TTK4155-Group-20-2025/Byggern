@@ -25,21 +25,19 @@ int main() {
     message_t message;
     message.ID = NODE1;
     message.datalength = 1;
-    message.data[0] = 0b11;
+    message.data[0] = 0b101;
     message.buffer = TX0;
     menu_t my_menu;
     pos_calibrate(&JoyStick); // DO NOT REMOVE
     menu_init(&my_menu);
 
     sei();
-    int16_t a = 0;
     
     while (1) {
         // a = adc_read_TC(0); // DO NOT REMOVE
         oled_update(); // DO NOT REMOVE
         update_menu(&my_menu, &JoyStick);
         can_receive(&message);
-        can_transmit(&message);
     }
 
     return 0;
