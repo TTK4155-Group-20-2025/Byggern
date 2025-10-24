@@ -1,6 +1,8 @@
-build/main.o: main.c sam/sam3x/include/sam.h sam/sam3x/include/sam3x8e.h \
- sam/cmsis/core_cm3.h sam/cmsis/cmsis_version.h \
- sam/cmsis/cmsis_compiler.h sam/cmsis/cmsis_gcc.h sam/cmsis/mpu_armv7.h \
+build/can_controller.o: CAN_node_2/can_controller.c \
+ CAN_node_2/can_controller.h sam/sam3x/include/sam.h \
+ sam/sam3x/include/sam3x8e.h sam/cmsis/core_cm3.h \
+ sam/cmsis/cmsis_version.h sam/cmsis/cmsis_compiler.h \
+ sam/cmsis/cmsis_gcc.h sam/cmsis/mpu_armv7.h \
  sam/sam3x/source/system_sam3x.h sam/compiler.h sam/parts.h \
  sam/preprocessor.h sam/tpaste.h sam/stringz.h sam/mrepeat.h sam/io.h \
  sam/sam3x/include/sam3xa.h sam/interrupt.h \
@@ -71,6 +73,4 @@ build/main.o: main.c sam/sam3x/include/sam.h sam/sam3x/include/sam3x8e.h \
  sam/sam3x/include/instance/instance_wdt.h \
  sam/sam3x/include/instance/instance_rtc.h \
  sam/sam3x/include/instance/instance_gpbr.h \
- sam/sam3x/include/pio/pio_sam3x8e.h StarterCode/uart.h \
- CAN_node_2/can_controller.h Drivers/joystick.h \
- Drivers/../CAN_node_2/can_controller.h
+ sam/sam3x/include/pio/pio_sam3x8e.h

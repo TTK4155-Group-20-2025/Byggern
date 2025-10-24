@@ -23,10 +23,10 @@ int main() {
 
     position_t JoyStick;
     message_t message;
-    message.ID = NODE1;
-    message.datalength = 1;
-    message.data[0] = 0b101;
-    message.buffer = TX0;
+    // message.ID = SENSOR;
+    // message.datalength = 1;
+    // message.data[0] = 0b101;
+    // message.buffer = TX0;
     menu_t my_menu;
     pos_calibrate(&JoyStick); // DO NOT REMOVE
     menu_init(&my_menu);
@@ -38,6 +38,7 @@ int main() {
         oled_update(); // DO NOT REMOVE
         update_menu(&my_menu, &JoyStick);
         can_receive(&message);
+        can_send_joystick(&message, &JoyStick);
     }
 
     return 0;

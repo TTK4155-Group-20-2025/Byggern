@@ -1,15 +1,15 @@
 #include "can.h"
 
 volatile uint8_t can_received_flag = 0;
-volatile uint8_t a = 1;
+volatile uint8_t can_send_joystick_flag = 0;
 
 void can_init() {
     mcp2515_init();
     GICR |= (1 << INT0);
     MCUCR |= (1 << ISC01);
-    // TCCR0 |= (1 << WGM01) | (1 << CS02) | (0 << CS01) | (1 << CS00);
-    // TIMSK |= (1 << OCIE0);
-    // OCR0 = 48;
+    TCCR0 |= (1 << WGM01) | (1 << CS02) | (0 << CS01) | (1 << CS00);
+    TIMSK |= (1 << OCIE0);
+    OCR0 = 48;
 
     // Filter and masks for node 1. ID: 0b00000000000
     mcp2515_write(MCP_RXF0SIDH, 0x00);
@@ -21,16 +21,16 @@ void can_init() {
 
     // UPDATE THESE VALUES BELOW WHEN IMPLEMENTING NODE 2
     mcp2515_bit_modify(MCP_CNF1, 0b11000000, SJW1);
-    mcp2515_bit_modify(MCP_CNF1, 0b00111111, 0x00);
+    mcp2515_bit_modify(MCP_CNF1, 0b00111111, 0x27);
     mcp2515_bit_modify(MCP_CNF2, 0b11111111, 0b00010001);
-    mcp2515_bit_modify(MCP_CNF3, 0b00000000, 0b00000000);
+    mcp2515_bit_modify(MCP_CNF3, 0b00000000, 0b00000010);
 
     mcp2515_bit_modify(MCP_CANINTE, 0x01, 0x01);
     mcp2515_bit_modify(MCP_CANINTE, 0b0011100, 0x00);
     mcp2515_bit_modify(MCP_CANINTF, 0x01, 0x00);
     
 
-    mcp2515_bit_modify(MCP_CANCTRL, MODE_MASK, MODE_LOOPBACK); // CHANGE WHEN NODE 2 IS BEING IMPLEMENTED
+    mcp2515_bit_modify(MCP_CANCTRL, MODE_MASK, MODE_NORMAL);
 }
 
 void can_transmit(message_t* message) {
@@ -131,10 +131,23 @@ void can_receive(message_t* message) {
     }
 }
 
+void can_send_joystick(message_t* message, position_t* joy_pos) {
+    if (can_send_joystick_flag) {
+        message->buffer = TX0;
+        message->ID = JOYSTICK;
+        message->datalength = 4;
+        message->data[0] = (uint8_t)(joy_pos->X >> 8);
+        message->data[1] = (uint8_t)(joy_pos->X & 0xFF);
+        message->data[2] = (uint8_t)(joy_pos->Y >> 8);
+        message->data[3] = (uint8_t)(joy_pos->Y & 0xFF);
+        can_transmit(message);
+    }
+}
+
 ISR(INT0_vect) {
     can_received_flag = 1;
 }
 
-// ISR(TIMER0_COMP_vect) {
-
-// }
+ISR(TIMER0_COMP_vect) {
+    can_send_joystick_flag = 1;
+}

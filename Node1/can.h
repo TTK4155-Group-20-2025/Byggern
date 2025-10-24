@@ -2,10 +2,11 @@
 #include "Drivers/Com/uart.h"
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include "Drivers/adc.h"
 
 typedef enum {
-    NODE1 = 0b00,
-    NODE2 = 0b10
+    SENSOR = 0b00,
+    JOYSTICK = 0b10
     // ADD MORE LATER WHEN IMPLEMENTING NDOE 2. DIFFERENT IDs FOR DIFFERENT INSTRUCTIONS
 } ID_t;
 
@@ -19,3 +20,5 @@ typedef struct {
 void can_init();
 void can_transmit(message_t* message);
 void can_receive(message_t* message);
+
+void can_send_joystick(message_t* message, position_t* joy_pos);

@@ -9,8 +9,9 @@ SOURCE_FILES = \
 	$(BOOTUP) \
 	main.c \
 	StarterCode/uart.c \
-#   filename1.c \
-#   filename2.c \
+    CAN_node_2/can_controller.c \
+    CAN_node_2/can_interrupt.c \
+	Drivers/joystick.c \
 #	filenameN.c
 
 # Feel free to ignore anything below this line

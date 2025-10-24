@@ -2,6 +2,8 @@
 #include <stdarg.h>
 #include "sam.h"
 #include "StarterCode/uart.h"
+#include "CAN_node_2/can_controller.h"
+#include "Drivers/joystick.h"
 
 #define F_CPU 84000000
 #define BAUDRATE 9600
@@ -20,30 +22,35 @@ int main()
 {
     SystemInit();
     uart_init(F_CPU, BAUDRATE);
+    can_init_def_tx_rx_mb((CAN_BR_BRP_Msk & (0x68 << CAN_BR_BRP_Pos))
+     | (CAN_BR_SJW_Msk & (0 << CAN_BR_SJW_Pos)) 
+     | (CAN_BR_SMP_ONCE)
+     | (CAN_BR_PROPAG_Msk & (1 << CAN_BR_PROPAG_Pos))
+     | (CAN_BR_PHASE1_Msk & (2 << CAN_BR_PHASE1_Pos))
+     | (CAN_BR_PHASE2_Msk & (2 << CAN_BR_PHASE2_Pos)));
 
     WDT->WDT_MR = WDT_MR_WDDIS; //Disable Watchdog Timer
 
-    //Uncomment after including uart above
-    //uart_init(/*cpufreq*/, /*baud*/);
-    //printf("Hello World\n\r");
+    // PMC->PMC_PCER0 = PMC_PCER0_PID12; // Just for testing
 
-    PMC->PMC_PCER0 = PMC_PCER0_PID12;
+    // PIOB->PIO_PER = PIO_PER_P13;
+    // PIOB->PIO_OER = PIO_OER_P13;
 
-    PIOB->PIO_PER = PIO_PER_P13;
-    PIOB->PIO_OER = PIO_OER_P13;
+    // PIOB->PIO_SODR = PIO_SODR_P13;
 
-    PIOB->PIO_SODR = PIO_SODR_P13;
+    // PIOB->PIO_CODR = PIO_SODR_P13;
 
-    PIOB->PIO_CODR = PIO_SODR_P13;
-
-    uint8_t a = 'a';
-
-    uart_tx(a);
+    int16_t b = (int16_t)0;
+    int16_t c = (int16_t)0;
+    CAN_MESSAGE message;
+    joystick_pos JoyStick;
 
     while (1)
     {
-        /* code */
-
+        joy_pos_read(&JoyStick, &message);
+        b = JoyStick.X;
+        c = JoyStick.Y;
+        printf("X: %ld Y: %ld\n", b, c);
     }
     
 }
