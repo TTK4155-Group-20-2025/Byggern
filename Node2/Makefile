@@ -12,6 +12,7 @@ SOURCE_FILES = \
     CAN_node_2/can_controller.c \
     CAN_node_2/can_interrupt.c \
 	Drivers/joystick.c \
+	Drivers/Peripherals/pwm.c \
 #	filenameN.c
 
 # Feel free to ignore anything below this line
@@ -44,7 +45,7 @@ $(BUILD_DIR)/%.o : %.s | $(BUILD_DIR)
 	$(AS) $< -o $@
 
 $(ELF) : $(OBJS) | $(BUILD_DIR)
-	$(LD) $(LDFLAGS) -o $@ $(OBJS) $(LDLIBS)
+	$(LD) $(LDFLAGS) -o $@ $(OBJS) $(LDLIBS) -lm
 
 
 .PHONY: clean

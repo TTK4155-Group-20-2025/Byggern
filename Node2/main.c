@@ -4,6 +4,7 @@
 #include "StarterCode/uart.h"
 #include "CAN_node_2/can_controller.h"
 #include "Drivers/joystick.h"
+#include "Drivers/Peripherals/pwm.h"
 
 #define F_CPU 84000000
 #define BAUDRATE 9600
@@ -28,6 +29,7 @@ int main()
      | (CAN_BR_PROPAG_Msk & (1 << CAN_BR_PROPAG_Pos))
      | (CAN_BR_PHASE1_Msk & (2 << CAN_BR_PHASE1_Pos))
      | (CAN_BR_PHASE2_Msk & (2 << CAN_BR_PHASE2_Pos)));
+    pwm_init();
 
     WDT->WDT_MR = WDT_MR_WDDIS; //Disable Watchdog Timer
 
@@ -42,6 +44,7 @@ int main()
 
     int16_t b = (int16_t)0;
     int16_t c = (int16_t)0;
+    int32_t d = (int32_t)0;
     CAN_MESSAGE message;
     joystick_pos JoyStick;
 
@@ -50,7 +53,9 @@ int main()
         joy_pos_read(&JoyStick, &message);
         b = JoyStick.X;
         c = JoyStick.Y;
-        printf("X: %ld Y: %ld\n", b, c);
+        d = (int32_t)JoyStick.degrees;
+        printf("X: %ld Y: %ld Degrees: %ld\n", b, c, d);
+        update_duty_cycle(JoyStick.degrees);
     }
     
 }
