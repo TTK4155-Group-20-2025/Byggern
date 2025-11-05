@@ -36,9 +36,9 @@ int main() {
     while (1) {
         // a = adc_read_TC(0); // DO NOT REMOVE
         oled_update(); // DO NOT REMOVE
-        update_menu(&my_menu, &JoyStick);
-        can_receive(&message);
-        can_send_joystick(&message, &JoyStick);
+        update_menu(&my_menu, &JoyStick, &message);
+        // can_receive(&message);
+        // can_send_joystick(&message, &JoyStick);
     }
 
     return 0;

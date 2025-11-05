@@ -58,6 +58,7 @@
   "C_Cpp_Runner.msvcSecureNoWarnings": false,
   "files.associations": {
     ".als.json": "jsonc",
-    "mcp2515.h": "c"
+    "mcp2515.h": "c",
+    "stdint.h": "c"
   }
 }

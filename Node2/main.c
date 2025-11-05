@@ -5,6 +5,7 @@
 #include "CAN_node_2/can_controller.h"
 #include "Drivers/joystick.h"
 #include "Drivers/Peripherals/pwm.h"
+#include "Drivers/photodiode.h"
 
 #define F_CPU 84000000
 #define BAUDRATE 9600
@@ -30,6 +31,7 @@ int main()
      | (CAN_BR_PHASE1_Msk & (2 << CAN_BR_PHASE1_Pos))
      | (CAN_BR_PHASE2_Msk & (2 << CAN_BR_PHASE2_Pos)));
     pwm_init();
+    photodiode_init();
 
     WDT->WDT_MR = WDT_MR_WDDIS; //Disable Watchdog Timer
 
@@ -45,6 +47,7 @@ int main()
     int16_t b = (int16_t)0;
     int16_t c = (int16_t)0;
     int32_t d = (int32_t)0;
+    uint32_t e = 0;
     CAN_MESSAGE message;
     joystick_pos JoyStick;
 
@@ -54,8 +57,11 @@ int main()
         b = JoyStick.X;
         c = JoyStick.Y;
         d = (int32_t)JoyStick.degrees;
-        printf("X: %ld Y: %ld Degrees: %ld\n", b, c, d);
+        printf("X: %6ld Y: %6ld Degrees: %6ld\n", b, c, d);
         update_duty_cycle(JoyStick.degrees);
+        // e = photodiode_test();
+        // printf("Digital value of photodiode: %4lu\n", e);
+        game_end(&message);
     }
     
 }

@@ -196,22 +196,16 @@ void oled_clear_box(uint8_t page) {
     } OLED_DISPLAY[page*128 + 127-20] = 0b00000000;
 }
 void oled_home() {
-    // enable_slave_OLED();
     oled_clean();
 
     char* option_1 = "Play game";
     char* option_2 = "Score";
-    // oled_pos(3, 40);
-    // oled_print(option_1);
-    // oled_pos(5, 50);
-    // oled_print(option_2);
 
-    // disable_all_slaves();
     oled_print(option_1, 3, 40);
     oled_print(option_2, 5, 50);
     oled_print_box(3);
 }
-void oled_score(char** scoreboard) {
+void oled_score(uint16_t* scoreboard) {
     oled_clean();
     char* option_1 = "Back";
     char* title = "Scores";
@@ -223,8 +217,58 @@ void oled_score(char** scoreboard) {
     uint8_t byte = 0;
     for (int i = 0; i < 3; i++) {
         oled_print_char((char)(49 + i), 2+i, 40);
-        oled_print(scoreboard[i], 2 + i, 50);
+        // oled_print(scoreboard[i], 2 + i, 50);
     }
+
+    uint16_t temp = scoreboard[0];
+    uint16_t temp2 = scoreboard[0];
+    temp = temp / 100;
+    oled_print_char(temp + 48, 2, 50);
+    temp2 = scoreboard[0] - temp*100;
+    temp2 = temp2 / 10;
+    oled_print_char(temp2 + 48, 2, 56);
+    temp = scoreboard[0] - temp*100 - temp2*10;
+    oled_print_char(temp + 48, 2, 62);
+
+    temp = scoreboard[1];
+    temp2 = scoreboard[1];
+    temp = temp / 100;
+    oled_print_char(temp + 48, 3, 50);
+    temp2 = scoreboard[1] - temp*100;
+    temp2 = temp2 / 10;
+    oled_print_char(temp2 + 48, 3, 56);
+    temp = scoreboard[1] - temp*100 - temp2*10;
+    oled_print_char(temp + 48, 3, 62);
+
+    temp = scoreboard[2];
+    temp2 = scoreboard[2];
+    temp = temp / 100;
+    oled_print_char(temp + 48, 4, 50);
+    temp2 = scoreboard[2] - temp*100;
+    temp2 = temp2 / 10;
+    oled_print_char(temp2 + 48, 4, 56);
+    temp = scoreboard[2] - temp*100 - temp2*10;
+    oled_print_char(temp + 48, 4, 62);
+}
+void oled_play_game(uint16_t score) {
+    oled_clean();
+    
+    // char* title = "Score:";
+    // oled_print(title, 2, 50);
+
+    // uint16_t temp = score;
+    // uint16_t temp2 = score;
+    // temp = temp / 100;
+    // oled_print_char(temp + 48, 3, 45);
+    // temp2 = score - temp*100;
+    // temp2 = temp2 / 10;
+    // oled_print_char(temp2 + 48, 3, 55);
+    // temp = score - temp*100 - temp2*10;
+    // oled_print_char(temp + 48, 3, 65);
+    char* title = "The game has started";
+    char* motivation = "You can do this!";
+    oled_print(title, 3, 5);
+    oled_print(motivation, 5, 20);
 }
 
 void oled_update() {

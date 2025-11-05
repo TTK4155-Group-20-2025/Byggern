@@ -13,6 +13,8 @@ SOURCE_FILES = \
     CAN_node_2/can_interrupt.c \
 	Drivers/joystick.c \
 	Drivers/Peripherals/pwm.c \
+	Drivers/photodiode.c \
+
 #	filenameN.c
 
 # Feel free to ignore anything below this line

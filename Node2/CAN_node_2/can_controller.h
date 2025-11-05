@@ -15,9 +15,9 @@
 #include <stdint.h>
 
 typedef enum {
-    SENSOR = 0b00,
+    GAME_END = 0b00,
     JOYSTICK = 0b10,
-    TURNON = 0b01
+    TURN_ON = 0b01
     // ADD MORE LATER WHEN IMPLEMENTING NDOE 2. DIFFERENT IDs FOR DIFFERENT INSTRUCTIONS
 } ID_t;
 

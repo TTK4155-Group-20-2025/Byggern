@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Drivers/mcp2515.h"
 #include "Drivers/Com/uart.h"
 #include <avr/io.h>
@@ -5,9 +7,9 @@
 #include "Drivers/adc.h"
 
 typedef enum {
-    SENSOR = 0b00,
+    GAME_END = 0b00,
     JOYSTICK = 0b10,
-    TURNON = 0b01
+    TURN_ON = 0b01
     // ADD MORE LATER WHEN IMPLEMENTING NDOE 2. DIFFERENT IDs FOR DIFFERENT INSTRUCTIONS
 } ID_t;
 

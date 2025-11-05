@@ -122,9 +122,8 @@ void can_receive(message_t* message) {
         for (int i = 0; i < message->datalength; i++) {
             message->data[i] = mcp2515_read(MCP_RXB0D0 + i);
         }
-        uint8_t temp = message->data[0];
 
-        printf("Recieved: %u\n", message->data[0]);
+        printf("Recieved: %u\n", message->data[0]); // FJERN
 
         can_received_flag = 0;
         mcp2515_bit_modify(MCP_CANINTF, 0x01, 0x00);

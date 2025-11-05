@@ -16,6 +16,7 @@ void oled_print(char* string, uint8_t page, uint8_t column);
 void oled_print_box(uint8_t page);
 void oled_clear_box(uint8_t page);
 void oled_home();
-void oled_score(char** scoreboard);
+void oled_score(uint16_t* scoreboard);
+void oled_play_game(uint16_t score);
 
 void oled_update();

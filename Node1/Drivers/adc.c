@@ -9,6 +9,7 @@ volatile int16_t Y_pads = 0;
 volatile int16_t X_joystick = 0;
 volatile int16_t Y_joystick = 0;
 volatile uint8_t read_pos_flag = 0;
+volatile uint8_t counter = 0;
 
 void adc_init() {
     DDRD |= (1 << PD5);
@@ -97,58 +98,60 @@ void pos_calibrate(position_t* position_joystick) {
 }
 
 void pos_read(position_t* position_joystick) {
-    int16_t x_pos_read = X_joystick;
-    int16_t y_pos_read = Y_joystick;
+    // int16_t x_pos_read = X_joystick;
+    // int16_t y_pos_read = Y_joystick;
 
-    int16_t y_percent = 0;
-    int16_t x_percent = 0;
+    // int16_t y_percent = 0;
+    // int16_t x_percent = 0;
 
-    int16_t max = 245;
-    int16_t min = 75;
+    // int16_t max = 245;
+    // int16_t min = 75;
 
-    if (x_pos_read > position_joystick->initX) {
-        x_percent = (100*(x_pos_read - position_joystick->initX))/(max - position_joystick->initX);
-        if (x_percent > 100) {
-            x_percent = 100;
-        }
-    } else {
-        x_percent = -(100*(x_pos_read - position_joystick->initX))/(min - position_joystick->initX);
-        if (x_percent < -100) {
-            x_percent = -100;
-        }
-    }
-    if (y_pos_read > position_joystick->initY) {
-        y_percent = (100*(y_pos_read - position_joystick->initY))/(max - position_joystick->initY);
-        if (y_percent > 100) {
-            y_percent = 100;
-        }
-    } else {
-        y_percent = -(100*(y_pos_read - position_joystick->initY))/(min - position_joystick->initY);
-        if (y_percent < -100) {
-            y_percent = -100;
-        }
-    }
+    // if (x_pos_read > position_joystick->initX) {
+    //     x_percent = (100*(x_pos_read - position_joystick->initX))/(max - position_joystick->initX);
+    //     if (x_percent > 100) {
+    //         x_percent = 100;
+    //     }
+    // } else {
+    //     x_percent = -(100*(x_pos_read - position_joystick->initX))/(min - position_joystick->initX);
+    //     if (x_percent < -100) {
+    //         x_percent = -100;
+    //     }
+    // }
+    // if (y_pos_read > position_joystick->initY) {
+    //     y_percent = (100*(y_pos_read - position_joystick->initY))/(max - position_joystick->initY);
+    //     if (y_percent > 100) {
+    //         y_percent = 100;
+    //     }
+    // } else {
+    //     y_percent = -(100*(y_pos_read - position_joystick->initY))/(min - position_joystick->initY);
+    //     if (y_percent < -100) {
+    //         y_percent = -100;
+    //     }
+    // }
 
     // FOR TESTING:
-    position_joystick->X = x_percent;
+    // position_joystick->X = x_percent;
     //printf("X_precent: %" PRIi16 "\n", position_joystick->X);
-    position_joystick->Y = y_percent;
+    // position_joystick->Y = y_percent;
     //printf("Y_precent: %" PRIi16 "\n", position_joystick->Y);
+    position_joystick->X = X_joystick - position_joystick->initX;
+    position_joystick->Y = Y_joystick - position_joystick->initY;
 }
 
 void direction_read(position_t* position_joystick) {
     // int8_t neutral_zone = 20;
 
-    if (position_joystick->Y > 40 && position_joystick->Y >= abs(position_joystick->X)) {
+    if (position_joystick->Y > 60 && position_joystick->Y >= abs(position_joystick->X)) {
         position_joystick->DIR = DIR_UP;
         // printf("Up\n");
-    } else if (position_joystick->Y < -40 && abs(position_joystick->Y) >= abs(position_joystick->X)) {
+    } else if (position_joystick->Y < -60 && abs(position_joystick->Y) >= abs(position_joystick->X)) {
         position_joystick->DIR = DIR_DOWN;
         // printf("Down\n");
-    } else if (position_joystick->X > 40 && abs(position_joystick->X) > abs(position_joystick->Y)) {
+    } else if (position_joystick->X > 60 && abs(position_joystick->X) > abs(position_joystick->Y)) {
         position_joystick->DIR = DIR_RIGHT;
         // printf("Right\n");
-    } else if (position_joystick->X < -40 && abs(position_joystick->X) < abs(position_joystick->Y)) {
+    } else if (position_joystick->X < -60 && abs(position_joystick->X) < abs(position_joystick->Y)) {
         position_joystick->DIR = DIR_LEFT;
         // printf("Left\n");
     } else {
@@ -157,6 +160,13 @@ void direction_read(position_t* position_joystick) {
     }
 }
 
+uint16_t get_score() {
+    if (counter % 51 == 0) {
+        return 1;
+    } return 0;
+}
+
 ISR(TIMER3_COMPA_vect) {
     read_pos_flag = 1;
+    counter += 1;
 }
