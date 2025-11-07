@@ -38,6 +38,6 @@ void adc_init();
 int16_t adc_read_TC(uint8_t channel);
 int16_t adc_read(uint8_t channel);
 void pos_calibrate(position_t* position_joystick);
-void pos_read(position_t* position_joystick);
+void pos_read(position_t* position_joystick, pad_t* position_pad);
 void direction_read(position_t* position_joystick);
 uint16_t get_score();

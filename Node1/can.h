@@ -8,8 +8,8 @@
 
 typedef enum {
     GAME_END = 0b00,
+    TURN_ON = 0b01,
     JOYSTICK = 0b10,
-    TURN_ON = 0b01
     // ADD MORE LATER WHEN IMPLEMENTING NDOE 2. DIFFERENT IDs FOR DIFFERENT INSTRUCTIONS
 } ID_t;
 
@@ -24,4 +24,4 @@ void can_init();
 void can_transmit(message_t* message);
 void can_receive(message_t* message);
 
-void can_send_joystick(message_t* message, position_t* joy_pos);
+void can_send_joystick_and_pad(message_t* message, position_t* joy_pos, pad_t* pad);

@@ -130,15 +130,17 @@ void can_receive(message_t* message) {
     }
 }
 
-void can_send_joystick(message_t* message, position_t* joy_pos) {
+void can_send_joystick_and_pad(message_t* message, position_t* joy_pos, pad_t* pad) {
     if (can_send_joystick_flag) {
         message->buffer = TX0;
         message->ID = JOYSTICK;
-        message->datalength = 4;
+        message->datalength = 6;
         message->data[0] = (uint8_t)(joy_pos->X >> 8);
         message->data[1] = (uint8_t)(joy_pos->X & 0xFF);
         message->data[2] = (uint8_t)(joy_pos->Y >> 8);
         message->data[3] = (uint8_t)(joy_pos->Y & 0xFF);
+        message->data[4] = (uint8_t)(pad->X >> 8);
+        message->data[5] = (uint8_t)(pad->X & 0xFF);
         can_transmit(message);
     }
 }

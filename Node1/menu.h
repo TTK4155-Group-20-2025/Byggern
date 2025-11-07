@@ -30,4 +30,4 @@ void enter_score_screen(menu_t* menu);
 void enter_home_screen(menu_t* menu);
 uint8_t button_pressed();
 void update_selector(menu_t* menu, position_t* position_joystick);
-void update_menu(menu_t* menu, position_t* position_joystick, message_t* message);
+void update_menu(menu_t* menu, position_t* position_joystick, message_t* message, pad_t* position_pad);

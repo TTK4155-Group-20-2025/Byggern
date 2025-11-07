@@ -14,6 +14,7 @@ SOURCE_FILES = \
 	Drivers/joystick.c \
 	Drivers/Peripherals/pwm.c \
 	Drivers/photodiode.c \
+	Drivers/motor_regulator.c \
 
 #	filenameN.c
 

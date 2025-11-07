@@ -22,6 +22,7 @@ int main() {
     can_init();
 
     position_t JoyStick;
+    pad_t Pad;
     message_t message;
     // message.ID = SENSOR;
     // message.datalength = 1;
@@ -34,9 +35,8 @@ int main() {
     sei();
     
     while (1) {
-        // a = adc_read_TC(0); // DO NOT REMOVE
         oled_update(); // DO NOT REMOVE
-        update_menu(&my_menu, &JoyStick, &message);
+        update_menu(&my_menu, &JoyStick, &message, &Pad);
         // can_receive(&message);
         // can_send_joystick(&message, &JoyStick);
     }

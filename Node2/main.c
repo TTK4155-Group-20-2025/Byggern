@@ -6,6 +6,7 @@
 #include "Drivers/joystick.h"
 #include "Drivers/Peripherals/pwm.h"
 #include "Drivers/photodiode.h"
+#include "Drivers/motor_regulator.h"
 
 #define F_CPU 84000000
 #define BAUDRATE 9600
@@ -30,7 +31,7 @@ int main()
      | (CAN_BR_PROPAG_Msk & (1 << CAN_BR_PROPAG_Pos))
      | (CAN_BR_PHASE1_Msk & (2 << CAN_BR_PHASE1_Pos))
      | (CAN_BR_PHASE2_Msk & (2 << CAN_BR_PHASE2_Pos)));
-    pwm_init();
+    motor_regulator_init();
     photodiode_init();
 
     WDT->WDT_MR = WDT_MR_WDDIS; //Disable Watchdog Timer
@@ -47,21 +48,26 @@ int main()
     int16_t b = (int16_t)0;
     int16_t c = (int16_t)0;
     int32_t d = (int32_t)0;
-    uint32_t e = 0;
+    int16_t e = 0;
     CAN_MESSAGE message;
     joystick_pos JoyStick;
+    pad_t Pad;
+    motor_position_t Mot_Pos;
 
     while (1)
     {
-        joy_pos_read(&JoyStick, &message);
+        joy_pos_read(&JoyStick, &message, &Pad);
         b = JoyStick.X;
         c = JoyStick.Y;
         d = (int32_t)JoyStick.degrees;
-        printf("X: %6ld Y: %6ld Degrees: %6ld\n", b, c, d);
-        update_duty_cycle(JoyStick.degrees);
+        e = Pad.X;
+        printf("Joy X: %6ld Joy Y: %6ld Degrees: %6ld Pad X: %6ld\n", b, c, d, e);
+        update_duty_cycle_servo(JoyStick.degrees);
+        update_motor_pos(&Pad);
         // e = photodiode_test();
         // printf("Digital value of photodiode: %4lu\n", e);
         game_end(&message);
+        read_encoder(&Mot_Pos);
     }
     
 }

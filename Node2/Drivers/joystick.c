@@ -3,13 +3,15 @@
 
 uint8_t can_received_joystick_flag = 0; // For interrupts
 
-void joy_pos_read(joystick_pos* pos, CAN_MESSAGE* message) {
+void joy_pos_read(joystick_pos* pos, CAN_MESSAGE* message, pad_t* pad) {
     if (can_receive(message, 1) == 0) {
         // Maybe add for loop
         pos->X = (int16_t)(message->data[0] << 8);
         pos->X |= (int16_t)(message->data[1] & 0xFF);
         pos->Y = (int16_t)(message->data[2] << 8);
         pos->Y |= (int16_t)(message->data[3] & 0xFF);
+        pad->X = (int16_t)(message->data[4] << 8);
+        pad->X |= (int16_t)(message->data[5] & 0xFF);
 
         if (abs(pos->X) < 10 && abs(pos->Y) < 10) {
             pos->degrees = 0;

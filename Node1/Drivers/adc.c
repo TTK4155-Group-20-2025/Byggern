@@ -97,7 +97,8 @@ void pos_calibrate(position_t* position_joystick) {
     _delay_us(40);
 }
 
-void pos_read(position_t* position_joystick) {
+void pos_read(position_t* position_joystick, pad_t* position_pad) {
+    // Uncomment this if you want position of joystick in percent from 100 to -100
     // int16_t x_pos_read = X_joystick;
     // int16_t y_pos_read = Y_joystick;
 
@@ -137,6 +138,8 @@ void pos_read(position_t* position_joystick) {
     //printf("Y_precent: %" PRIi16 "\n", position_joystick->Y);
     position_joystick->X = X_joystick - position_joystick->initX;
     position_joystick->Y = Y_joystick - position_joystick->initY;
+    position_pad->X = X_pads;
+    // ADD Y pad if we want to
 }
 
 void direction_read(position_t* position_joystick) {
