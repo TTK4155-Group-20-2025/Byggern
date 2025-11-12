@@ -61,13 +61,12 @@ int main()
         c = JoyStick.Y;
         d = (int32_t)JoyStick.degrees;
         e = Pad.X;
-        printf("Joy X: %6ld Joy Y: %6ld Degrees: %6ld Pad X: %6ld\n", b, c, d, e);
+        // printf("Joy X: %6ld Joy Y: %6ld Degrees: %6ld Pad X: %6ld\n", b, c, d, e);
         update_duty_cycle_servo(JoyStick.degrees);
-        update_motor_pos(&Pad);
         // e = photodiode_test();
         // printf("Digital value of photodiode: %4lu\n", e);
         game_end(&message);
-        read_encoder(&Mot_Pos);
+        control_motor(&Mot_Pos, &Pad);
     }
     
 }

@@ -23,7 +23,7 @@ void pwm_init() {
 
     PWM->PWM_CH_NUM[0].PWM_CMR |= (0 << PWM_CMR_CALG) | (0 << PWM_CMR_CPOL) | PWM_CMR_CPRE_MCK_DIV_128;
     PWM->PWM_CH_NUM[0].PWM_CPRD = CRPD;
-    PWM->PWM_CH_NUM[0].PWM_CDTY = (uint32_t)pad_to_cdty(127);
+    PWM->PWM_CH_NUM[0].PWM_CDTY = (uint32_t)pad_to_cdty(0, 0.0, 127.0);
     PWM->PWM_ENA |= PWM_ENA_CHID0;
 }
 void update_duty_cycle_servo(int32_t degrees) {
@@ -32,22 +32,21 @@ void update_duty_cycle_servo(int32_t degrees) {
         PWM->PWM_CH_NUM[1].PWM_CDTYUPD = (uint32_t)round(degrees_to_cdty(degrees));
     }
 }
-void update_duty_cycle_motor(int16_t padX) {
-    if (padX >= 0 && padX <= 255) {
-        PWM->PWM_CH_NUM[0].PWM_CDTYUPD = (uint32_t)round(pad_to_cdty(padX));
-    } else {
-        PWM->PWM_CH_NUM[0].PWM_CDTYUPD = (uint32_t)round(pad_to_cdty(127));
-    }
+void update_duty_cycle_motor(int32_t u, float start, float end) {
+    PWM->PWM_CH_NUM[0].PWM_CDTYUPD = (uint32_t)round(pad_to_cdty(u, start, end));
 }
 int32_t degrees_to_cdty(int32_t degrees) {
     float temp = (float)degrees;
     temp = -(131.0/36.0)*(temp - 180.0) + 11813.0;
     return (int32_t)temp;
 }
-int32_t pad_to_cdty(int16_t padX) {
+int32_t pad_to_cdty(int32_t u, float start, float end) {
     // printf("temp: %ld\n", padX);
-    int32_t temp = abs(padX - 127);
-    temp = -(4125.0/127.0)*(temp) + 13125;
-    // printf("duty cycle: %ld\n", temp);
+    int32_t temp = abs(u);
+    if (temp > end) {
+        temp = end;
+    }
+    temp = (6000.0 - 13125.0)/end*temp + 13125;
+    printf("duty cycle: %ld\n", temp);
     return (int32_t)temp;
 }
