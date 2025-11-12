@@ -66,6 +66,10 @@
     "string_view": "c",
     "initializer_list": "c",
     "compare": "c",
-    "cstdint": "c"
+    "cstdint": "c",
+    "pwm.h": "c",
+    "solenoid.h": "c",
+    "joystick.h": "c",
+    "can_controller.h": "c"
   }
 }

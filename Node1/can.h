@@ -24,4 +24,4 @@ void can_init();
 void can_transmit(message_t* message);
 void can_receive(message_t* message);
 
-void can_send_joystick_and_pad(message_t* message, position_t* joy_pos, pad_t* pad);
+void can_send_joystick_and_pad(message_t* message, position_t* joy_pos, pad_t* pad, uint8_t button);

@@ -12,6 +12,7 @@ void joy_pos_read(joystick_pos* pos, CAN_MESSAGE* message, pad_t* pad) {
         pos->Y |= (int16_t)(message->data[3] & 0xFF);
         pad->X = (int16_t)(message->data[4] << 8);
         pad->X |= (int16_t)(message->data[5] & 0xFF);
+        pad->button = message->data[6];
 
         if (abs(pos->X) < 10 && abs(pos->Y) < 10) {
             pos->degrees = 0;

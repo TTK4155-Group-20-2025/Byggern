@@ -7,6 +7,7 @@
 #include "Drivers/Peripherals/pwm.h"
 #include "Drivers/photodiode.h"
 #include "Drivers/motor_regulator.h"
+#include "Drivers/solenoid.h"
 
 #define F_CPU 84000000
 #define BAUDRATE 9600
@@ -33,6 +34,7 @@ int main()
      | (CAN_BR_PHASE2_Msk & (2 << CAN_BR_PHASE2_Pos)));
     motor_regulator_init();
     photodiode_init();
+    solenoid_init();
 
     WDT->WDT_MR = WDT_MR_WDDIS; //Disable Watchdog Timer
 
@@ -66,7 +68,7 @@ int main()
         // e = photodiode_test();
         // printf("Digital value of photodiode: %4lu\n", e);
         game_end(&message);
+        solenoid_activate(&Pad);
         control_motor(&Mot_Pos, &Pad);
-    }
-    
+    }  
 }

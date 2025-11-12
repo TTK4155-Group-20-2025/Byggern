@@ -15,6 +15,7 @@ SOURCE_FILES = \
 	Drivers/Peripherals/pwm.c \
 	Drivers/photodiode.c \
 	Drivers/motor_regulator.c \
+	Drivers/solenoid.c \
 
 #	filenameN.c
 

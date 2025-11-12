@@ -21,7 +21,7 @@ void photodiode_init() {
 }
 void game_end(CAN_MESSAGE* message) {
     uint32_t status = ADC->ADC_ISR;
-    if (game_ended_flag) {
+    if (game_ended_flag > 1000) {
         message->id = GAME_END;
         message->data_length = 1;
         message->data[0] = 0xFF;
@@ -38,7 +38,6 @@ uint32_t photodiode_test() {
 void ADC_Handler(void) {
     uint32_t status = ADC->ADC_ISR;
     if (status & ADC_ISR_COMPE) {
-        game_ended_flag = 1;
+        game_ended_flag += 1;
     }
-    // NVIC_ClearPendingIRQ(ADC_IRQn);
 }

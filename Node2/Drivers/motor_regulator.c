@@ -44,7 +44,7 @@ void motor_regulator_init() {
     last.pos = 100000;
     motor_position_t current;
     read_encoder(&current);
-    update_duty_cycle_motor(100, 0.0, 127.0);
+    update_duty_cycle_motor(60, 0, 100);
     for (int i = 0; i < 100000; i++);
     while(last.pos != current.pos) {
         read_encoder(&last);
@@ -76,7 +76,7 @@ void motor_regulator_init() {
         read_encoder(&current);
     } end_pos = current.pos;
     end_pos -= 6; // Add margin
-    update_duty_cycle_motor(0, 0.0, 127.0);
+    update_duty_cycle_motor(0, 0, 100);
 
     // Configuring TC0 for sample time
     TC0->TC_CHANNEL[0].TC_CMR = TC_CMR_ACPC_CLEAR | TC_CMR_ASWTRG_SET | TC_CMR_WAVE | TC_CMR_WAVSEL_UP_RC | TC_CMR_TCCLKS_TIMER_CLOCK4;
@@ -86,7 +86,7 @@ void motor_regulator_init() {
     TC0->TC_CHANNEL[0].TC_CCR = TC_CCR_CLKEN | TC_CCR_SWTRG;
 }
 
-void update_motor_pos(int32_t u, float start, float end) {
+void update_motor_pos(int32_t u, int32_t start, int32_t end) {
     update_duty_cycle_motor(u, start, end);
     if (u < 0) {
         PIOC->PIO_SODR = PIO_SODR_P23;
