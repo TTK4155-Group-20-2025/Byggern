@@ -46,7 +46,7 @@ int32_t pad_to_cdty(int32_t u, float start, float end) {
     if (temp > end) {
         temp = end;
     }
-    temp = (6000.0 - 13125.0)/end*temp + 13125;
+    temp = ((8000.0 - 13125.0)/(end)*temp + 13125);
     printf("duty cycle: %ld\n", temp);
     return (int32_t)temp;
 }

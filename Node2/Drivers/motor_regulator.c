@@ -6,7 +6,7 @@ volatile int32_t start_pos = 0;
 volatile int32_t end_pos = 0;
 volatile int32_t integral = 0;
 
-volatile int32_t K_p = 3;
+volatile int32_t K_p = 1;
 volatile int32_t K_i = 0;
 
 void motor_regulator_init() {
@@ -104,7 +104,7 @@ void control_motor(motor_position_t* mot_pos, pad_t* pad) {
     if (control_motor_flag) {
         read_encoder(mot_pos);
         printf("pad: %6ld\n", pad->X);
-        int32_t ref_pos = -(end_pos*100 - start_pos*100)/(255*100) * (pad->X - 255) + start_pos;
+        int32_t ref_pos = (-(end_pos - start_pos)/(255)) * (pad->X - 255) + start_pos;
         printf("ref: %6ld\n", ref_pos);
         int32_t error = 0;
         if (abs((ref_pos - mot_pos->pos) - error) > 8) {
