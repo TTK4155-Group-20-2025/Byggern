@@ -2,7 +2,8 @@
 #include "pwm.h"
 #include <math.h>
 
-#define CRPD 0x3345
+#define CRPD_SERVO 0x3345
+#define CRPD_MOTOR 0x19a28
 
 void pwm_init() {
     // Enable PIOB and PWM PMC controllers
@@ -16,13 +17,13 @@ void pwm_init() {
     PIOB->PIO_ABSR |= PIO_ABSR_P12;
     
     // Enable PWM clocks
-    PWM->PWM_CH_NUM[1].PWM_CMR |= (0 << PWM_CMR_CALG) | (0 << PWM_CMR_CPOL) | PWM_CMR_CPRE_MCK_DIV_128;
-    PWM->PWM_CH_NUM[1].PWM_CPRD = CRPD;
+    PWM->PWM_CH_NUM[1].PWM_CMR = (0 << PWM_CMR_CALG) | (0 << PWM_CMR_CPOL) | PWM_CMR_CPRE_MCK_DIV_128;
+    PWM->PWM_CH_NUM[1].PWM_CPRD = CRPD_SERVO;
     PWM->PWM_CH_NUM[1].PWM_CDTY = (uint32_t)round(degrees_to_cdty(90));
     PWM->PWM_ENA |= PWM_ENA_CHID1;
 
-    PWM->PWM_CH_NUM[0].PWM_CMR |= (0 << PWM_CMR_CALG) | (0 << PWM_CMR_CPOL) | PWM_CMR_CPRE_MCK_DIV_128;
-    PWM->PWM_CH_NUM[0].PWM_CPRD = CRPD;
+    PWM->PWM_CH_NUM[0].PWM_CMR = (0 << PWM_CMR_CALG) | (0 << PWM_CMR_CPOL) | PWM_CMR_CPRE_MCK_DIV_16;
+    PWM->PWM_CH_NUM[0].PWM_CPRD = CRPD_MOTOR;
     PWM->PWM_CH_NUM[0].PWM_CDTY = (uint32_t)pad_to_cdty(0, 0, 100);
     PWM->PWM_ENA |= PWM_ENA_CHID0;
 }
@@ -32,7 +33,7 @@ void update_duty_cycle_servo(int32_t degrees) {
         PWM->PWM_CH_NUM[1].PWM_CDTYUPD = (uint32_t)round(degrees_to_cdty(degrees));
     }
 }
-void update_duty_cycle_motor(int32_t u, int32_t start_limit, int32_t end_limit) {
+void update_duty_cycle_motor(int32_t u, int32_t limit) {
     PWM->PWM_CH_NUM[0].PWM_CDTYUPD = (uint32_t)pad_to_cdty(u, start_limit, end_limit);
 }
 int32_t degrees_to_cdty(int32_t degrees) {
@@ -40,13 +41,12 @@ int32_t degrees_to_cdty(int32_t degrees) {
     temp = -(131.0/36.0)*(temp - 180.0) + 11813.0;
     return (int32_t)temp;
 }
-int32_t pad_to_cdty(int32_t u, int32_t start_limit, int32_t end_limit) {
-    // printf("temp: %ld\n", padX);
+int32_t motor_input_to_cdty(int32_t u, int32_t limit) {
     int32_t temp = abs(u);
-    if (temp > end_limit) {
-        temp = end_limit;
+    if (temp > limit) {
+        temp = limit;
     }
-    temp = ((9000 - 13125)/(end_limit)*temp + 13125);
+    temp = ((80000 - 105000)*temp) / limit + 105000;
     printf("duty cycle: %ld\n", temp);
     return (int32_t)temp;
 }

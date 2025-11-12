@@ -26,7 +26,7 @@ void motor_regulator_init() {
     // PIOC->PIO_SODR = PIO_SODR_P23; // To set high and low on Dir/Phase
     // PIOC->PIO_CODR = PIO_SODR_P23;
 
-    PIOC->PIO_SODR = PIO_SODR_P23;
+    PIOC->PIO_CODR = PIO_CODR_P23;
 
     // Configuring TC2 for encoder
     PIOC->PIO_PDR |= PIO_PDR_P25;
@@ -44,7 +44,7 @@ void motor_regulator_init() {
     last.pos = 100000;
     motor_position_t current;
     read_encoder(&current);
-    update_duty_cycle_motor(60, 0, 100);
+    update_duty_cycle_motor(60, 100);
     for (int i = 0; i < 100000; i++);
     while(last.pos != current.pos) {
         read_encoder(&last);
@@ -68,7 +68,7 @@ void motor_regulator_init() {
 
     // Moving to end position
     last.pos = 100000;
-    PIOC->PIO_CODR = PIO_SODR_P23;
+    PIOC->PIO_SODR = PIO_SODR_P23;
     for (int i = 0; i < 100000; i++);
     while(last.pos != current.pos) {
         read_encoder(&last);
@@ -76,22 +76,22 @@ void motor_regulator_init() {
         read_encoder(&current);
     } end_pos = current.pos;
     end_pos -= 6; // Add margin
-    update_duty_cycle_motor(0, 0, 100);
+    update_duty_cycle_motor(0, 100);
 
     // Configuring TC0 for sample time
-    TC0->TC_CHANNEL[0].TC_CMR = TC_CMR_ACPC_CLEAR | TC_CMR_ASWTRG_SET | TC_CMR_WAVE | TC_CMR_WAVSEL_UP_RC | TC_CMR_TCCLKS_TIMER_CLOCK4;
-    TC0->TC_CHANNEL[0].TC_RC = 656250;
+    TC0->TC_CHANNEL[0].TC_CMR = TC_CMR_ACPC_CLEAR | TC_CMR_ASWTRG_SET | TC_CMR_WAVE | TC_CMR_WAVSEL_UP_RC | TC_CMR_TCCLKS_TIMER_CLOCK3;
+    TC0->TC_CHANNEL[0].TC_RC = 26250;
     TC0->TC_CHANNEL[0].TC_IER = TC_IER_CPCS;
     NVIC_EnableIRQ(TC0_IRQn);
     TC0->TC_CHANNEL[0].TC_CCR = TC_CCR_CLKEN | TC_CCR_SWTRG;
 }
 
-void update_motor_pos(int32_t u, int32_t start, int32_t end) {
-    update_duty_cycle_motor(u, start, end);
+void update_motor_pos(int32_t u, int32_t limit) {
+    update_duty_cycle_motor(u, limit);
     if (u < 0) {
         PIOC->PIO_SODR = PIO_SODR_P23;
     } else if (u >= 0) {
-        PIOC->PIO_CODR = PIO_SODR_P23;
+        PIOC->PIO_CODR = PIO_CODR_P23;
     }
 }
 
@@ -104,7 +104,7 @@ void control_motor(motor_position_t* mot_pos, pad_t* pad) {
     if (control_motor_flag) {
         read_encoder(mot_pos);
         printf("pad: %6ld\n", pad->X);
-        int32_t ref_pos = (-(end_pos - start_pos)/(255)) * (pad->X - 255) + start_pos;
+        int32_t ref_pos = ((end_pos - start_pos) * (255 - pad->X)) / 255 + start_pos;
         printf("ref: %6ld\n", ref_pos);
         int32_t error = 0;
         if (abs((ref_pos - mot_pos->pos) - error) > 8) {
@@ -116,7 +116,7 @@ void control_motor(motor_position_t* mot_pos, pad_t* pad) {
         int32_t u = K_p*error + K_i*integral;
         printf("u: %6ld\n", u);
 
-        update_motor_pos(u, -10000.0, 10000.0);
+        update_motor_pos(u, 10000);
 
         control_motor_flag = 0;
     }
