@@ -21,7 +21,7 @@ void photodiode_init() {
 }
 void game_end(CAN_MESSAGE* message) {
     uint32_t status = ADC->ADC_ISR;
-    if (game_ended_flag > 1000) {
+    if (game_ended_flag > 1000000) {
         message->id = GAME_END;
         message->data_length = 1;
         message->data[0] = 0xFF;

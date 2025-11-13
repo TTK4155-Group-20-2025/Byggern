@@ -6,8 +6,8 @@ volatile int32_t start_pos = 0;
 volatile int32_t end_pos = 0;
 volatile int32_t integral = 0;
 
-volatile int32_t K_p = 1;
-volatile int32_t K_i = 0;
+volatile int32_t K_p = 26;
+volatile int32_t K_i = 1;
 
 void motor_regulator_init() {
     pwm_init();
@@ -26,7 +26,7 @@ void motor_regulator_init() {
     // PIOC->PIO_SODR = PIO_SODR_P23; // To set high and low on Dir/Phase
     // PIOC->PIO_CODR = PIO_SODR_P23;
 
-    PIOC->PIO_CODR = PIO_CODR_P23;
+    PIOC->PIO_SODR = PIO_CODR_P23;
 
     // Configuring TC2 for encoder
     PIOC->PIO_PDR |= PIO_PDR_P25;
@@ -44,7 +44,7 @@ void motor_regulator_init() {
     last.pos = 100000;
     motor_position_t current;
     read_encoder(&current);
-    update_duty_cycle_motor(60, 100);
+    update_duty_cycle_motor(80, 100);
     for (int i = 0; i < 100000; i++);
     while(last.pos != current.pos) {
         read_encoder(&last);
@@ -68,7 +68,7 @@ void motor_regulator_init() {
 
     // Moving to end position
     last.pos = 100000;
-    PIOC->PIO_SODR = PIO_SODR_P23;
+    PIOC->PIO_CODR = PIO_SODR_P23;
     for (int i = 0; i < 100000; i++);
     while(last.pos != current.pos) {
         read_encoder(&last);
@@ -104,7 +104,9 @@ void control_motor(motor_position_t* mot_pos, pad_t* pad) {
     if (control_motor_flag) {
         read_encoder(mot_pos);
         printf("pad: %6ld\n", pad->X);
-        int32_t ref_pos = ((end_pos - start_pos) * (255 - pad->X)) / 255 + start_pos;
+        int32_t ref_pos = ((end_pos - start_pos) * (255 - pad->X));
+        int32_t temp = ref_pos / 255;
+        ref_pos = temp + start_pos;
         printf("ref: %6ld\n", ref_pos);
         int32_t error = 0;
         if (abs((ref_pos - mot_pos->pos) - error) > 8) {
@@ -116,7 +118,7 @@ void control_motor(motor_position_t* mot_pos, pad_t* pad) {
         int32_t u = K_p*error + K_i*integral;
         printf("u: %6ld\n", u);
 
-        update_motor_pos(u, 10000);
+        update_motor_pos(u, 50000);
 
         control_motor_flag = 0;
     }

@@ -24,7 +24,7 @@ void pwm_init() {
 
     PWM->PWM_CH_NUM[0].PWM_CMR = (0 << PWM_CMR_CALG) | (0 << PWM_CMR_CPOL) | PWM_CMR_CPRE_MCK_DIV_16;
     PWM->PWM_CH_NUM[0].PWM_CPRD = CRPD_MOTOR;
-    PWM->PWM_CH_NUM[0].PWM_CDTY = (uint32_t)pad_to_cdty(0, 0, 100);
+    PWM->PWM_CH_NUM[0].PWM_CDTY = (uint32_t)motor_input_to_cdty(0, 100);
     PWM->PWM_ENA |= PWM_ENA_CHID0;
 }
 void update_duty_cycle_servo(int32_t degrees) {
@@ -34,7 +34,7 @@ void update_duty_cycle_servo(int32_t degrees) {
     }
 }
 void update_duty_cycle_motor(int32_t u, int32_t limit) {
-    PWM->PWM_CH_NUM[0].PWM_CDTYUPD = (uint32_t)pad_to_cdty(u, start_limit, end_limit);
+    PWM->PWM_CH_NUM[0].PWM_CDTYUPD = (uint32_t)motor_input_to_cdty(u, limit);
 }
 int32_t degrees_to_cdty(int32_t degrees) {
     float temp = (float)degrees;

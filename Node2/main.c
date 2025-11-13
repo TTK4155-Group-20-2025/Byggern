@@ -53,7 +53,12 @@ int main()
     int16_t e = 0;
     CAN_MESSAGE message;
     joystick_pos JoyStick;
+    JoyStick.X = 0;
+    JoyStick.Y = 0;
+    JoyStick.degrees = 0;
     pad_t Pad;
+    Pad.button = 0;
+    Pad.X = 127;
     motor_position_t Mot_Pos;
 
     while (1)
