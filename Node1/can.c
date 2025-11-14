@@ -145,6 +145,13 @@ void can_send_joystick_and_pad(message_t* message, position_t* joy_pos, pad_t* p
         can_transmit(message);
     }
 }
+void can_send_game_on(message_t* message) {
+    message->buffer = TX0;
+    message->ID = TURN_ON;
+    message->datalength = 1;
+    message->data[0] = 0xFF;
+    can_transmit(message);
+}
 
 ISR(INT0_vect) {
     can_received_flag = 1;

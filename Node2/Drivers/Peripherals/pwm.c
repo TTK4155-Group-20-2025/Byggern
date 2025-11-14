@@ -3,7 +3,8 @@
 #include <math.h>
 
 #define CRPD_SERVO 0x3345
-#define CRPD_MOTOR 0x19a28
+// #define CRPD_MOTOR 0x19a28
+#define CRPD_MOTOR 4200
 
 void pwm_init() {
     // Enable PIOB and PWM PMC controllers
@@ -22,7 +23,7 @@ void pwm_init() {
     PWM->PWM_CH_NUM[1].PWM_CDTY = (uint32_t)round(degrees_to_cdty(90));
     PWM->PWM_ENA |= PWM_ENA_CHID1;
 
-    PWM->PWM_CH_NUM[0].PWM_CMR = (0 << PWM_CMR_CALG) | (0 << PWM_CMR_CPOL) | PWM_CMR_CPRE_MCK_DIV_16;
+    PWM->PWM_CH_NUM[0].PWM_CMR = (0 << PWM_CMR_CALG) | (0 << PWM_CMR_CPOL) | PWM_CMR_CPRE_MCK;
     PWM->PWM_CH_NUM[0].PWM_CPRD = CRPD_MOTOR;
     PWM->PWM_CH_NUM[0].PWM_CDTY = (uint32_t)motor_input_to_cdty(0, 100);
     PWM->PWM_ENA |= PWM_ENA_CHID0;
@@ -46,7 +47,8 @@ int32_t motor_input_to_cdty(int32_t u, int32_t limit) {
     if (temp > limit) {
         temp = limit;
     }
-    temp = ((80000 - 105000)*temp) / limit + 105000;
-    printf("duty cycle: %ld\n", temp);
+    // temp = ((80000 - 105000)*temp) / limit + 105000;
+    temp = ((100 - 4200)*temp) / limit + 4200;
+    printf("duty cycle: %ld\n", temp); // FJERN
     return (int32_t)temp;
 }

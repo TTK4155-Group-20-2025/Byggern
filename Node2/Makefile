@@ -16,6 +16,7 @@ SOURCE_FILES = \
 	Drivers/photodiode.c \
 	Drivers/motor_regulator.c \
 	Drivers/solenoid.c \
+	Drivers/game.c
 
 #	filenameN.c
 

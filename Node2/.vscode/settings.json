@@ -70,6 +70,10 @@
     "pwm.h": "c",
     "solenoid.h": "c",
     "joystick.h": "c",
-    "can_controller.h": "c"
+    "can_controller.h": "c",
+    "sam.h": "c",
+    "motor_regulator.h": "c",
+    "photodiode.h": "c",
+    "uart.h": "c"
   }
 }

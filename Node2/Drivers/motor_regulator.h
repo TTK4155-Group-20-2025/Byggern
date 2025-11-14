@@ -1,3 +1,4 @@
+#pragma once
 #include "joystick.h"
 #include "Peripherals/pwm.h"
 

@@ -74,10 +74,11 @@ void update_selector(menu_t* menu, position_t* position_joystick) {
 void update_menu(menu_t* menu, position_t* position_joystick, message_t* message, pad_t* position_pad) {
     adc_read_TC(0); // DO NOT REMOVE
     pos_read(position_joystick, position_pad);
+    can_receive(message);
     if (menu->state == GAME) {
         printf("Hei\n"); // FJERN
-        can_send_joystick_and_pad(message, position_joystick, position_pad, button_pressed(1));
-        can_receive(message);
+        // can_send_joystick_and_pad(message, position_joystick, position_pad, button_pressed(1));
+        // can_receive(message);
         menu->current_score += get_score();
         printf("Current score: %u\n", menu->current_score);
         if (message->ID == GAME_END) {
@@ -94,6 +95,7 @@ void update_menu(menu_t* menu, position_t* position_joystick, message_t* message
             enter_score_screen(menu);
             message->ID = JOYSTICK;
         }
+        can_send_joystick_and_pad(message, position_joystick, position_pad, button_pressed(1));
     } else {
         direction_read(position_joystick);
 
@@ -101,6 +103,7 @@ void update_menu(menu_t* menu, position_t* position_joystick, message_t* message
 
         if (menu->state == HOME && menu->select_pos == 3 && button_pressed(0)) {
             menu->current_score = 0;
+            can_send_game_on(message);
             play_game(menu);
         } else if (menu->state == HOME && menu->select_pos == 5 && button_pressed(0)) {
             enter_score_screen(menu);

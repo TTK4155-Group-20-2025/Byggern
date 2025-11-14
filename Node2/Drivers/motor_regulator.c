@@ -6,14 +6,15 @@ volatile int32_t start_pos = 0;
 volatile int32_t end_pos = 0;
 volatile int32_t integral = 0;
 
-volatile int32_t K_p = 26;
-volatile int32_t K_i = 1;
+volatile int32_t K_p = 15; // 15
+volatile int32_t K_i_n = 50; // 45
+volatile int32_t K_i_d = 100;
 
 void motor_regulator_init() {
     pwm_init();
 
     // Enabling PIOB Pin 23 for phase/dir control and TC2 for encoder
-    PMC->PMC_PCER0 |= PMC_PCER0_PID13;
+    PMC->PMC_PCER0 |= PMC_PCER0_PID13; 
     PMC->PMC_PCER0 |= 1 << ID_TC2;
     PMC->PMC_PCER1 |= 1 << (ID_TC6 - 32);
     PMC->PMC_PCER0 |= 1 << ID_TC0;
@@ -44,7 +45,7 @@ void motor_regulator_init() {
     last.pos = 100000;
     motor_position_t current;
     read_encoder(&current);
-    update_duty_cycle_motor(80, 100);
+    update_duty_cycle_motor(30, 100);
     for (int i = 0; i < 100000; i++);
     while(last.pos != current.pos) {
         read_encoder(&last);
@@ -63,6 +64,7 @@ void motor_regulator_init() {
     TC2->TC_CHANNEL[0].TC_CCR = TC_CCR_CLKEN | TC_CCR_SWTRG;
     TC2->TC_CHANNEL[1].TC_CCR = TC_CCR_CLKEN | TC_CCR_SWTRG;
 
+    // Set start position
     start_pos = current.pos;
     start_pos += 6; // Add margin
 
@@ -74,13 +76,16 @@ void motor_regulator_init() {
         read_encoder(&last);
         for (int i = 0; i < 100000; i++);
         read_encoder(&current);
-    } end_pos = current.pos;
+    }
+    
+    // Set end position
+    end_pos = current.pos;
     end_pos -= 6; // Add margin
     update_duty_cycle_motor(0, 100);
 
     // Configuring TC0 for sample time
     TC0->TC_CHANNEL[0].TC_CMR = TC_CMR_ACPC_CLEAR | TC_CMR_ASWTRG_SET | TC_CMR_WAVE | TC_CMR_WAVSEL_UP_RC | TC_CMR_TCCLKS_TIMER_CLOCK3;
-    TC0->TC_CHANNEL[0].TC_RC = 26250;
+    TC0->TC_CHANNEL[0].TC_RC = 26250/2;
     TC0->TC_CHANNEL[0].TC_IER = TC_IER_CPCS;
     NVIC_EnableIRQ(TC0_IRQn);
     TC0->TC_CHANNEL[0].TC_CCR = TC_CCR_CLKEN | TC_CCR_SWTRG;
@@ -97,26 +102,26 @@ void update_motor_pos(int32_t u, int32_t limit) {
 
 void read_encoder(motor_position_t* mot_pos) {
     mot_pos->pos = TC2->TC_CHANNEL[0].TC_CV;
-    printf("Encoder value: %ld\n", mot_pos->pos); // FJERN
+    // printf("Encoder value: %ld\n", mot_pos->pos); // FJERN
 }
 
 void control_motor(motor_position_t* mot_pos, pad_t* pad) {
     if (control_motor_flag) {
         read_encoder(mot_pos);
-        printf("pad: %6ld\n", pad->X);
+        // printf("pad: %6ld\n", pad->X);
         int32_t ref_pos = ((end_pos - start_pos) * (255 - pad->X));
         int32_t temp = ref_pos / 255;
         ref_pos = temp + start_pos;
-        printf("ref: %6ld\n", ref_pos);
+        // printf("ref: %6ld\n", ref_pos);
         int32_t error = 0;
-        if (abs((ref_pos - mot_pos->pos) - error) > 8) {
+        if (abs((ref_pos - mot_pos->pos) - error) > 3) {
             error = ref_pos - mot_pos->pos;
         }
-        printf("error: %6ld\n", error);
+        // printf("error: %6ld\n", error);
         integral += error;
 
-        int32_t u = K_p*error + K_i*integral;
-        printf("u: %6ld\n", u);
+        int32_t u = K_p*error + (K_i_n*integral)/K_i_d;
+        // printf("u: %6ld\n", u);
 
         update_motor_pos(u, 50000);
 

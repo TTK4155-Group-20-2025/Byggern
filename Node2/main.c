@@ -8,6 +8,7 @@
 #include "Drivers/photodiode.h"
 #include "Drivers/motor_regulator.h"
 #include "Drivers/solenoid.h"
+#include "game.h"
 
 #define F_CPU 84000000
 #define BAUDRATE 9600
@@ -32,25 +33,17 @@ int main()
      | (CAN_BR_PROPAG_Msk & (1 << CAN_BR_PROPAG_Pos))
      | (CAN_BR_PHASE1_Msk & (2 << CAN_BR_PHASE1_Pos))
      | (CAN_BR_PHASE2_Msk & (2 << CAN_BR_PHASE2_Pos)));
-    motor_regulator_init();
-    photodiode_init();
-    solenoid_init();
+    // motor_regulator_init();
+    // photodiode_init();
+    // solenoid_init();
+    game_init();
 
     WDT->WDT_MR = WDT_MR_WDDIS; //Disable Watchdog Timer
 
-    // PMC->PMC_PCER0 = PMC_PCER0_PID12; // Just for testing
-
-    // PIOB->PIO_PER = PIO_PER_P13;
-    // PIOB->PIO_OER = PIO_OER_P13;
-
-    // PIOB->PIO_SODR = PIO_SODR_P13;
-
-    // PIOB->PIO_CODR = PIO_SODR_P13;
-
-    int16_t b = (int16_t)0;
-    int16_t c = (int16_t)0;
-    int32_t d = (int32_t)0;
-    int16_t e = 0;
+    // int16_t b = (int16_t)0;
+    // int16_t c = (int16_t)0;
+    // int32_t d = (int32_t)0;
+    // int16_t e = 0;
     CAN_MESSAGE message;
     joystick_pos JoyStick;
     JoyStick.X = 0;
@@ -63,17 +56,15 @@ int main()
 
     while (1)
     {
-        joy_pos_read(&JoyStick, &message, &Pad);
-        b = JoyStick.X;
-        c = JoyStick.Y;
-        d = (int32_t)JoyStick.degrees;
-        e = Pad.X;
-        // printf("Joy X: %6ld Joy Y: %6ld Degrees: %6ld Pad X: %6ld\n", b, c, d, e);
-        update_duty_cycle_servo(JoyStick.degrees);
-        // e = photodiode_test();
-        // printf("Digital value of photodiode: %4lu\n", e);
-        game_end(&message);
-        solenoid_activate(&Pad);
-        control_motor(&Mot_Pos, &Pad);
+        // joy_pos_read(&JoyStick, &message, &Pad);
+        // b = JoyStick.X;
+        // c = JoyStick.Y;
+        // d = (int32_t)JoyStick.degrees;
+        // e = Pad.X;
+        // update_duty_cycle_servo(JoyStick.degrees);
+        // game_end(&message);
+        // solenoid_activate(&Pad);
+        // control_motor(&Mot_Pos, &Pad);
+        game(&message, &Mot_Pos, &Pad, &JoyStick);
     }  
 }

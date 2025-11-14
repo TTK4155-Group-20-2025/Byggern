@@ -98,7 +98,7 @@ uint8_t can_init(uint32_t can_br, uint8_t num_tx_mb, uint8_t num_rx_mb)
 	/* Configure recieved mailboxes' addresses*/
 	CAN0->CAN_MB[num_tx_mb].CAN_MID = CAN_MID_MIDvA_Msk & (0b10 << CAN_MID_MIDvA_Pos);
 	// CHANGE SECOND MAILBOX MID LATER
-	CAN0->CAN_MB[num_tx_mb+1].CAN_MID = CAN_MID_MIDvA_Msk & (0b10 << CAN_MID_MIDvA_Pos);
+	CAN0->CAN_MB[num_tx_mb+1].CAN_MID = CAN_MID_MIDvA_Msk & (0b01 << CAN_MID_MIDvA_Pos);
 	
 	/*Configure transmit mailboxes */
 	for (int n = 0; n < num_tx_mb; n++)
